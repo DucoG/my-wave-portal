@@ -8,16 +8,27 @@ async function main() {
     console.log("Contract deployed to:", waveContract.address);
     console.log("Contract owner is:", owner.address);
 
+    
     let waveCount = await waveContract.getWaveCounter();
-    console.log(waveCount);
-
+    console.log("returned wavecounter = ",waveCount.toNumber());
     let waveTxn = await waveContract.wave();
     await waveTxn.wait();
 
     waveCount = await waveContract.getWaveCounter();
-    console.log(waveCount);
+    console.log("returned wavecounter = ",waveCount.toNumber());
+    
+    //connect new person
+    waveTxn = await waveContract.connect(randoPerson).wave();
+    await waveTxn.wait();
 
+    waveCount = await waveContract.getWaveCounter();
+    console.log("last wavecounter = ", waveCount.toNumber());
 
+    waveTxn = await waveContract.connect(randoPerson).wave();
+    await waveTxn.wait();
+
+    waveCount = await waveContract.getWaveCounter();
+    console.log("last wavecounter = ", waveCount.toNumber());
 
 
 }
