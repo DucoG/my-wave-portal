@@ -28,7 +28,7 @@ contract WavePortal {
         console.log(msg.sender, " just waved at you for the ", wavesPerPerson[msg.sender], "th time, with the following message:");
         console.log("Got message: %s", _message);
         waves.push(Wave(_message, msg.sender, block.timestamp));
-        emit NewWave(msg.sender, block.timestamp, _message);
+        //emit NewWave(msg.sender, block.timestamp, _message);
     }
 
     function getAllWaves() view public returns(Wave[] memory) {
