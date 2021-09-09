@@ -1,15 +1,11 @@
 async function main() {
     const [deployer] = await ethers.getSigners();
-
     console.log("Deploy account = ", deployer.address);
 
-    //disp account balance
-    console.log("Deployer balance = ", (await deployer.getBalance()).toString());
-
-    const Token = await ethers.getContractFactory("WavePortal");
-    const token = await Token.deploy();
-
-    console.log("contract address: ", token.address);
+    const waveContractFactory = await ethers.getContractFactory("WavePortal");
+    const waveContract = await waveContractFactory.deploy();
+    await waveContract.deployed();
+    console.log("contract address: ", waveContract.address);
 }
 
 main()

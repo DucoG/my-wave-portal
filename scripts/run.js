@@ -1,35 +1,28 @@
 const { hexStripZeros } = require("ethers/lib/utils");
-
 async function main() {
+
+    //Get owner
     const [owner, randoPerson] = await ethers.getSigners();
+    
+    //deploy
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
     const waveContract = await waveContractFactory.deploy();
     await waveContract.deployed();
     console.log("Contract deployed to:", waveContract.address);
     console.log("Contract owner is:", owner.address);
 
-    
-    let waveCount = await waveContract.getWaveCounter();
-    console.log("returned wavecounter = ",waveCount.toNumber());
-    let waveTxn = await waveContract.wave();
-    await waveTxn.wait();
+    //testing
+    let allWaves = await waveContract.getAllWaves()
+    console.log("current stored waves", allWaves)
 
-    waveCount = await waveContract.getWaveCounter();
-    console.log("returned wavecounter = ",waveCount.toNumber());
-    
-    //connect new person
-    waveTxn = await waveContract.connect(randoPerson).wave();
-    await waveTxn.wait();
+    let waveTxn = await waveContract.wave("A message!")
+    await waveTxn.wait()
 
-    waveCount = await waveContract.getWaveCounter();
-    console.log("last wavecounter = ", waveCount.toNumber());
+    waveTxn = await waveContract.wave("seccond message!")
+    await waveTxn.wait()
 
-    waveTxn = await waveContract.connect(randoPerson).wave();
-    await waveTxn.wait();
-
-    waveCount = await waveContract.getWaveCounter();
-    console.log("last wavecounter = ", waveCount.toNumber());
-
+    allWaves = await waveContract.getAllWaves()
+    console.log("current stored waves", allWaves)
 
 }
 
