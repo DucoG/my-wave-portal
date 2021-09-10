@@ -2,7 +2,7 @@ const { hexStripZeros } = require("ethers/lib/utils");
 async function main() {
 
     //Get owner
-    const [owner, rand1, rand2] = await ethers.getSigners();
+    const [owner, rand1, rand2, rand3] = await ethers.getSigners();
     
     //deploy
     const waveContractFactory = await hre.ethers.getContractFactory("WavePortal");
@@ -27,7 +27,7 @@ async function main() {
     console.log(userdata)
 
     console.log("sending msg")
-    let waveTxn = await waveContract.wave("rand1", "This is a cool message", 3)
+    let waveTxn = await waveContract.wave("rand1", "This is a cool message", 0)
     await waveTxn.wait()
 
     userdata = await waveContract.getAllUserData()
@@ -51,6 +51,10 @@ async function main() {
     console.log(outgoing)
     incomming = await waveContract.connect(rand2).getIncommingWaves()
     console.log(incomming)
+
+    registrationTxn = await waveContract.connect(rand3).register("d")
+    await waveTxn.wait()
+
 
     /*
     //testing

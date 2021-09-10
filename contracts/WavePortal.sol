@@ -43,7 +43,6 @@ contract WavePortal {
     //get id from username
     mapping(string => uint) getIdFromUsername;
 
-    //return userdata
 
     //get userdata from address
     //mapping(address => User) users;
@@ -54,15 +53,21 @@ contract WavePortal {
         waveCounter = 0;
     }
 
+    function checkIfRegistered() external view returns(bool){
+        return getIdFromAddress[msg.sender] > 0;
+    }
+
     //register
-    function register(string memory _username) public{
-        require(getIdFromAddress[msg.sender] < 1, "You're already registered! You can delete your account by using the 'deleteAccount' function." );
+    function register(string calldata _username) external {
+        require(getIdFromAddress[msg.sender] < 1, "You already picked a username! You can delete your account by using the 'deleteAccount' function." );
+        require(getIdFromUsername[_username] < 1, "This username already exists :(");
+        require(bytes(_username).length > 1, "Your username should be longer than one character");
         //registration process
         getIdFromAddress[msg.sender] = users.length + 1;
         getIdFromUsername[_username] = users.length + 1;
         users.push(User(_username, msg.sender, 10, 0, 0, users.length + 1));
         usernames.push(_username);
-        console.log("Hi %s, you are now a registered user and have received 10 wavebucks for free!", _username);
+        console.log("Hi %s, you now picked a username and have received 10 wavebucks for it!", _username);
     }
 
     //delete account
@@ -70,14 +75,15 @@ contract WavePortal {
 
     //Temporary!!!
     //get user data
-    function getAllUserData() public view returns (User[] memory) {
-        require(getIdFromAddress[msg.sender] > 0, "You must be registered in order to read user data");
-        return users;
+    function getUserData() public view returns (User memory) {
+        require(getIdFromAddress[msg.sender] > 0, "You must have picked a username to read user data");
+        uint id = getIdFromAddress[msg.sender];
+        return users[id-1];
     }
 
     // wave with message and money
-    function wave(string memory _receiverUsername , string memory _message, uint _sentBucks) public {
-        require(getIdFromAddress[msg.sender] > 0, "Please register before waving in order to receive your free wavebucks :)");
+    function wave(string calldata _receiverUsername , string calldata _message, uint _sentBucks) external {
+        require(getIdFromAddress[msg.sender] > 0, "Please pick a username before waving in order to receive your free wavebucks :)");
         require(getIdFromUsername[_receiverUsername] > 0, "that username isn't registered!");
 
 
@@ -95,7 +101,8 @@ contract WavePortal {
         incommingWaves[receiverId].push(Wave(_message, senderName, _receiverUsername, block.timestamp, _sentBucks));
         outgoigWaves[senderId].push(Wave(_message, senderName, _receiverUsername, block.timestamp, _sentBucks));
         users[receiverId - 1].wavebuckBalance += _sentBucks;
-        users[senderId - 1].wavebuckBalance -= _sentBucks - 1;
+        users[senderId - 1].wavebuckBalance -= _sentBucks;
+        users[senderId - 1].wavebuckBalance += 1;
 
         
         console.log("You just waved at %s with for with the following message:", _receiverUsername);
