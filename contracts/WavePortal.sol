@@ -134,6 +134,8 @@ contract WavePortal {
         return waveCounter;
     }
 
-
+    function getUsernames() public view returns (string[] memory) {
+        return usernames;
+    }
 }
 
